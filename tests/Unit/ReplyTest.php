@@ -10,7 +10,7 @@ class ReplyTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_has_an_owner()
+    function it_has_an_owner()
     {
         $reply = factory(\App\Reply::class)->create();
 
