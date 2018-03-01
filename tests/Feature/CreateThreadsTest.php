@@ -14,9 +14,9 @@ class CreateThreadsTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->expectException(\Illuminate\Auth\AuthenticationException::class);
+        $this->expectException('\Illuminate\Auth\AuthenticationException');
 
-        $thread = factory(\App\Thread::class)->make();
+        $thread = make('App\Thread');
 
         $this->post('/threads', $thread->toArray());
     }
@@ -24,9 +24,11 @@ class CreateThreadsTest extends TestCase
     /** @test */
     function an_authenticated_user_can_create_new_threads()
     {
-        $thread = factory(\App\Thread::class)->make();
+        $this->withoutExceptionHandling();
 
-        $this->actingAs(factory(\App\User::class)->create())
+        $thread = make('App\Thread');
+
+        $this->signIn()
             ->post('/threads', $thread->toArray());
 
         $this->get($thread->path())

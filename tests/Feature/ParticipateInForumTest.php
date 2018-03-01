@@ -22,11 +22,13 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     function an_authenticated_user_may_add_replies()
     {
-        $thread = factory(\App\Thread::class)->create();
+        $this->withoutExceptionHandling();
 
-        $reply = factory(\App\Reply::class)->make();
+        $thread = create('App\Thread');
 
-        $this->actingAs(factory(\App\User::class)->create())
+        $reply = make('App\Reply');
+
+        $this->signIn()
             ->post($thread->path() . '/replies', $reply->toArray());
 
         $this->get($thread->path())
