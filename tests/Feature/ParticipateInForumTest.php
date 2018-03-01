@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ParticipateInForumTest extends TestCase
@@ -23,8 +22,6 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     function an_authenticated_user_may_add_replies()
     {
-        $this->withoutExceptionHandling();
-
         $thread = factory(\App\Thread::class)->create();
 
         $reply = factory(\App\Reply::class)->make();
