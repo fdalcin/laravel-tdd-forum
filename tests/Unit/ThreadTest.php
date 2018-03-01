@@ -19,21 +19,23 @@ class ThreadTest extends TestCase
     }
 
     /** @test */
-    function it_has_a_path()
+    function it_has_an_owner()
     {
-        $this->assertEquals('/threads/' . $this->thread->id, $this->thread->path());
+        $this->assertInstanceOf('App\User', $this->thread->owner);
+    }
+
+    /** @test */
+    function it_can_make_a_string_path()
+    {
+        $this->assertEquals(
+            "/threads/{$this->thread->channel->slug}/{$this->thread->id}", $this->thread->path()
+        );
     }
 
     /** @test */
     function it_has_replies()
     {
         $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $this->thread->replies);
-    }
-
-    /** @test */
-    function it_has_an_owner()
-    {
-        $this->assertInstanceOf('App\User', $this->thread->owner);
     }
 
     /** @test */
@@ -45,5 +47,11 @@ class ThreadTest extends TestCase
         ]);
 
         $this->assertCount(1, $this->thread->replies);
+    }
+
+    /** @test */
+    function it_belongs_to_a_channel()
+    {
+        $this->assertInstanceOf('App\Channel', $this->thread->channel);
     }
 }

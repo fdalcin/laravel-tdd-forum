@@ -10,31 +10,19 @@ class CreateThreadsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    function guest_cannot_see_create_thread_page()
+    function guests_may_not_create_threads()
     {
         $this->get('/threads/create')
             ->assertRedirect('/login');
-    }
 
-
-    /** @test */
-    function guests_may_not_create_threads()
-    {
-        $this->withoutExceptionHandling();
-
-        $this->expectException('\Illuminate\Auth\AuthenticationException');
-
-        $thread = make('App\Thread');
-
-        $this->post('/threads', $thread->toArray());
+        $this->post('/threads')
+            ->assertRedirect('/login');
     }
 
     /** @test */
     function an_authenticated_user_can_create_new_threads()
     {
-        $this->withoutExceptionHandling();
-
-        $thread = make('App\Thread');
+        $thread = create('App\Thread');
 
         $this->signIn()
             ->post('/threads', $thread->toArray());

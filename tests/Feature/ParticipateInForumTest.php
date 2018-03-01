@@ -12,18 +12,13 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     function an_unauthenticated_user_may_not_add_replies()
     {
-        $this->withoutExceptionHandling();
-
-        $this->expectException(\Illuminate\Auth\AuthenticationException::class);
-
-        $this->post('/threads/1/replies', []);
+        $this->post('/threads/channel/1/replies')
+            ->assertRedirect('/login');
     }
 
     /** @test */
     function an_authenticated_user_may_add_replies()
     {
-        $this->withoutExceptionHandling();
-
         $thread = create('App\Thread');
 
         $reply = make('App\Reply');
