@@ -12,8 +12,27 @@
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+        <style>
+            body {
+                padding-bottom: 100px;
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                margin: 0;
+            }
+
+            .level {
+                align-items: center;
+                display: flex;
+            }
+
+            .flex {
+                flex: 1;
+            }
+        </style>
     </head>
-    <body style="padding-bottom: 100px">
+    <body>
         <div id="app">
             <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
                 <div class="container">
@@ -42,6 +61,8 @@
                                             My threads
                                         </a>
                                     @endif
+
+                                    <a href="/threads?popular=1" class="dropdown-item">Popular threads</a>
                                 </div>
                             </li>
 
