@@ -25,3 +25,4 @@ Route::get('/threads/{channel}/{thread}', 'ThreadsController@show')->name('threa
 Route::post('/threads', 'ThreadsController@store')->name('threads.store');
 Route::get('/threads/{channel}', 'ThreadsController@index');
 Route::post('/threads/{channel}/{thread}/replies', 'RepliesController@store')->name('threads.reply');
+Route::post('/replies/{reply}/favorites', 'FavoritesController@store');
