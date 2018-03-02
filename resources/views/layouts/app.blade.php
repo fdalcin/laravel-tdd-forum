@@ -36,7 +36,7 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <a href="/threads" class="dropdown-item">All threads</a>
-                                    
+
                                     @if(auth()->check())
                                         <a href="/threads?by={{ auth()->user()->name }}" class="dropdown-item">
                                             My threads

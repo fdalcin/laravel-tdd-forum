@@ -18,6 +18,11 @@ class Thread extends Model
         $this->replies()->create($reply);
     }
 
+    public function scopeFilter($query, $filters)
+    {
+        return $filters->apply($query);
+    }
+
     public function channel()
     {
         return $this->belongsTo(Channel::class);
