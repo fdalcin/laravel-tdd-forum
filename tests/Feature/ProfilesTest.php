@@ -21,8 +21,6 @@ class ProfilesTest extends TestCase
     /** @test */
     function profiles_display_all_threads_create_by_associated_user()
     {
-        $this->withoutExceptionHandling();
-
         $user = create('App\User');
 
         $thread = create('App\Thread', ['user_id' => $user->id]);
