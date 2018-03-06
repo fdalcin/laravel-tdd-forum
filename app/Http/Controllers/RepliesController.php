@@ -45,7 +45,7 @@ class RepliesController extends Controller
         request()->validate(['body' => 'required']);
 
         $thread->addReply([
-            'body'    => request('body'),
+            'body' => request('body'),
             'user_id' => auth()->id(),
         ]);
 
@@ -94,6 +94,10 @@ class RepliesController extends Controller
      */
     public function destroy(Reply $reply)
     {
-        //
+        $this->authorize('update', $reply);
+
+        $reply->delete();
+
+        return back();
     }
 }
