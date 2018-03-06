@@ -10,16 +10,28 @@ export default {
     },
 
     methods: {
+        cancel() {
+            this.body = this.attributes.body;
+
+            this.editing = false;
+        },
+
+        destroy() {
+            axios.delete('/replies/' + this.attributes.id).then(() => {
+                $(this.$el).fadeOut(300);
+
+                flash('Your reply has been deleted.');
+            });
+        },
+
         update() {
             axios
                 .patch('/replies/' + this.attributes.id, { body: this.body })
-                .then(() => this.finishUpdate());
-        },
+                .then(() => {
+                    this.editing = false;
 
-        finishUpdate() {
-            this.editing = false;
-
-            flash('Your reply has been updated.');
+                    flash('Your reply has been updated.');
+                });
         }
     }
 };

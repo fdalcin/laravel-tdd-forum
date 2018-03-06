@@ -47580,17 +47580,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
     methods: {
-        update: function update() {
+        cancel: function cancel() {
+            this.body = this.attributes.body;
+
+            this.editing = false;
+        },
+        destroy: function destroy() {
             var _this = this;
 
-            axios.patch('/replies/' + this.attributes.id, { body: this.body }).then(function () {
-                return _this.finishUpdate();
+            axios.delete('/replies/' + this.attributes.id).then(function () {
+                $(_this.$el).fadeOut(300);
+
+                flash('Your reply has been deleted.');
             });
         },
-        finishUpdate: function finishUpdate() {
-            this.editing = false;
+        update: function update() {
+            var _this2 = this;
 
-            flash('Your reply has been updated.');
+            axios.patch('/replies/' + this.attributes.id, { body: this.body }).then(function () {
+                _this2.editing = false;
+
+                flash('Your reply has been updated.');
+            });
         }
     }
 });

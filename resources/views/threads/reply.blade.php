@@ -25,7 +25,7 @@
                 </div>
                 
                 <button class="btn btn-sm btn-success" @click="update">Update</button>
-                <button class="btn btn-link" @click="editing = false">Cancel</button>
+                <button class="btn btn-link" @click="cancel">Cancel</button>
             </div>
 
             <div v-else v-text="body"></div>
@@ -34,13 +34,7 @@
         @can('update', $reply)
             <div class="card-footer level">
                 <button class="btn btn-sm mr-2" @click="editing = true">Edit</button>
-
-                <form method="POST" action="/replies/{{ $reply->id }}">
-                    {{ csrf_field() }}
-                    {{ method_field('DELETE') }}
-
-                    <button type="submit" class="btn btn-link">Delete</button>
-                </form>
+                <button class="btn btn-link" @click="destroy">Delete</button>
             </div>
         @endcan
     </div>
