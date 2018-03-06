@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -15,6 +14,7 @@ require('./bootstrap');
 
 Vue.component('flash', require('./components/Flash.vue'));
 Vue.component('reply', require('./components/Reply.vue'));
+Vue.component('favorite', require('./components/Favorite.vue'));
 
 const app = new Vue({
     el: '#app'
