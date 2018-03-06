@@ -1,5 +1,10 @@
-window._ = require('lodash');
-window.Popper = require('popper.js').default;
+import lodash from 'lodash';
+import Popper from 'popper.js';
+import axios from 'axios';
+import Vue from 'vue';
+
+window._ = lodash;
+window.Popper = Popper.default;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -19,11 +24,15 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = require('axios');
+window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-window.Vue = require('vue');
+window.Vue = Vue;
+
+window.events = new Vue();
+
+window.flash = message => window.events.$emit('flash', message);
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
@@ -36,14 +45,10 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    console.error(
+        'CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token'
+    );
 }
-
-window.events = new Vue();
-
-window.flash = (message) => {
-    window.events.$emit('flash', message);
-};
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

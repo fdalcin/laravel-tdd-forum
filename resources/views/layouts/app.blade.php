@@ -14,22 +14,15 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
         <style>
-            body {
-                padding-bottom: 100px;
-            }
+            body { padding-bottom: 100px; }
 
-            h1, h2, h3, h4, h5, h6 {
-                margin: 0;
-            }
+            h1, h2, h3, h4, h5, h6 { margin: 0; }
 
-            .level {
-                align-items: center;
-                display: flex;
-            }
+            .level { align-items: center; display: flex; }
 
-            .flex {
-                flex: 1;
-            }
+            .flex { flex: 1; }
+
+            [v-cloak] { display: none; }
         </style>
     </head>
     <body>
