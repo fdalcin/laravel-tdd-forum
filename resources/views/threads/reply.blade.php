@@ -7,9 +7,11 @@
                 said {{ $reply->created_at->diffForHumans() }}...
             </h5>
 
-            <div>
-                <favorite :reply="{{ $reply }}"></favorite>
-            </div>
+            @if(auth()->check())
+                <div>
+                    <favorite :reply="{{ $reply }}"></favorite>
+                </div>
+            @endif
         </div>
 
         <div class="card-body">
