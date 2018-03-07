@@ -29,26 +29,9 @@
                     </div>
                 </div>
 
-                <replies :data="{{ $thread->replies }}" @removed="repliesCount--"></replies>
+                <replies :data="{{ $thread->replies }}" @added="repliesCount++" @removed="repliesCount--"></replies>
 
                 <!-- {{ $replies->links() }} -->
-
-                @if(auth()->check())
-                    <form method="POST" action="{{ $thread->path() . '/replies' }}" class="mt-4">
-                        {{ csrf_field() }}
-
-                        <div class="form-group">
-                            <textarea name="body" id="body" class="form-control"
-                                        placeholder="Have something to say?" rows="5"></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Post</button>
-                    </form>
-                @else
-                    <p class="justify-content-center text-center mt-4">
-                        Please <a href="{{ route('login') }}">sing in</a> to participate in this discussion.
-                    </p>
-                @endif
             </div>
 
             <div class="col-md-4">
