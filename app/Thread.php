@@ -31,6 +31,18 @@ class Thread extends Model
         return $this->replies()->create($reply);
     }
 
+    public function subscribe()
+    {
+        $this->subscriptions()->create([
+            'user_id' => auth()->id()
+        ]);
+    }
+
+    public function unsubscribe()
+    {
+        $this->subscriptions()->where('user_id', auth()->id())->delete();
+    }
+
     public function scopeFilter($query, $filters)
     {
         return $filters->apply($query);
@@ -49,5 +61,10 @@ class Thread extends Model
     public function replies()
     {
         return $this->hasMany(Reply::class);
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(ThreadSubscription::class);
     }
 }
