@@ -8,6 +8,13 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        <script>
+            window.App = {!! json_encode([
+                'signedIn' => auth()->check(),
+                'user' => auth()->id()
+            ]) !!}
+        </script>
+
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Styles -->

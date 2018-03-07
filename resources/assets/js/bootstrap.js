@@ -30,6 +30,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 window.Vue = Vue;
 
+window.Vue.prototype.authorize = handler => handler(window.App.user);
+
 window.events = new Vue();
 
 window.flash = message => window.events.$emit('flash', message);
