@@ -12,6 +12,8 @@ class Thread extends Model
 
     protected $with = ['channel', 'owner'];
 
+    protected $appends = ['isSubscribedTo'];
+
     public static function boot()
     {
         parent::boot();
@@ -41,6 +43,11 @@ class Thread extends Model
     public function unsubscribe()
     {
         $this->subscriptions()->where('user_id', auth()->id())->delete();
+    }
+
+    public function getIsSubscribedToAttribute()
+    {
+        return $this->subscriptions()->where('user_id', auth()->id())->exists();
     }
 
     public function scopeFilter($query, $filters)

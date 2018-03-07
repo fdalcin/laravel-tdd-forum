@@ -15,5 +15,14 @@ class ThreadSubscriptionsController extends Controller
     public function store($channel, Thread $thread)
     {
         $thread->subscribe();
+
+        return response(['status' => 'You have been subscribed to this thread']);
+    }
+
+    public function destroy($channel, Thread $thread)
+    {
+        $thread->unsubscribe();
+
+        return response(['status' => 'You have been unsubscribed from this thread']);
     }
 }

@@ -81,4 +81,16 @@ class ThreadTest extends TestCase
 
         $this->assertDatabaseMissing('thread_subscriptions', ['user_id' => auth()->id(), 'thread_id' => $this->thread->id]);
     }
+
+    /** @test */
+    function it_knows_if_authenticated_user_is_subscribed_to()
+    {
+        $this->signIn();
+
+        $this->assertFalse($this->thread->isSubscribedTo);
+
+        $this->thread->subscribe();
+
+        $this->assertTrue($this->thread->isSubscribedTo);
+    }
 }
