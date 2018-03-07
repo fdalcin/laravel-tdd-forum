@@ -3,7 +3,7 @@
         <div class="card-header level">
             <h5 class="flex">
                 <a :href="'/profiles/' + data.owner.name" v-text="data.owner.name"></a>
-                said {{ data.created_at }}...
+                said <span v-text="ago"></span>
             </h5>
 
             <div v-if="signedIn">
@@ -33,6 +33,7 @@
 
 <script>
 import Favorite from './Favorite.vue';
+import moment from 'moment';
 
 export default {
     props: ['data'],
@@ -49,6 +50,10 @@ export default {
     },
 
     computed: {
+        ago() {
+            return moment(this.data.created_at).fromNow();
+        },
+
         canUpdate() {
             return this.authorize(user => this.data.user_id == user);
         },
