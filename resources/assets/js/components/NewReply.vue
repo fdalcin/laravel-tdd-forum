@@ -46,7 +46,8 @@ export default {
                     flash('Your reply has been posted.');
 
                     this.$emit('created', data);
-                });
+                })
+                .catch(({ response }) => flash(response.data, 'danger'));
         }
     }
 };

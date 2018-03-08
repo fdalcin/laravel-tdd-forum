@@ -32,59 +32,60 @@
 </template>
 
 <script>
-    import Favorite from './Favorite.vue';
-    import moment from 'moment';
+import Favorite from './Favorite.vue';
+import moment from 'moment';
 
-    export default {
-        props: ['data'],
+export default {
+    props: ['data'],
 
-        components: {
-            Favorite
+    components: {
+        Favorite
+    },
+
+    data() {
+        return {
+            body: this.data.body,
+            editing: false
+        };
+    },
+
+    computed: {
+        ago() {
+            return moment(this.data.created_at).fromNow();
         },
 
-        data() {
-            return {
-                body: this.data.body,
-                editing: false
-            };
+        canUpdate() {
+            return this.authorize(user => this.data.user_id == user.id);
         },
 
-        computed: {
-            ago() {
-                return moment(this.data.created_at).fromNow();
-            },
-
-            canUpdate() {
-                return this.authorize(user => this.data.user_id == user.id);
-            },
-
-            signedIn() {
-                return window.App.signedIn;
-            }
-        },
-
-        methods: {
-            cancel() {
-                this.body = this.data.body;
-
-                this.editing = false;
-            },
-
-            destroy() {
-                axios
-                        .delete('/replies/' + this.data.id)
-                        .then(() => this.$emit('deleted', this.data.id));
-            },
-
-            update() {
-                axios
-                        .patch('/replies/' + this.data.id, {body: this.body})
-                        .then(() => {
-                            this.editing = false;
-
-                            flash('Your reply has been updated.');
-                        });
-            }
+        signedIn() {
+            return window.App.signedIn;
         }
-    };
+    },
+
+    methods: {
+        cancel() {
+            this.body = this.data.body;
+
+            this.editing = false;
+        },
+
+        destroy() {
+            axios
+                .delete('/replies/' + this.data.id)
+                .then(() => this.$emit('deleted', this.data.id));
+        },
+
+        update() {
+            axios
+                .patch('/replies/' + this.data.id, { body: this.body })
+                .then(() => {
+                    this.editing = false;
+
+                    flash('Your reply has been updated.');
+                })
+                .catch(({ response }) => flash(response.data, 'danger'));
+        }
+    }
+};
 </script>

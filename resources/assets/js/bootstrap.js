@@ -34,7 +34,8 @@ window.Vue.prototype.authorize = handler => handler(window.App.user);
 
 window.events = new Vue();
 
-window.flash = message => window.events.$emit('flash', message);
+window.flash = (message, level = 'success') =>
+    window.events.$emit('flash', { message, level });
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
