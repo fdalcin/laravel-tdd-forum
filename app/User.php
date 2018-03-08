@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -34,6 +35,19 @@ class User extends Authenticatable
     public function getRouteKeyName()
     {
         return 'name';
+    }
+
+    public function read(Thread $thread)
+    {
+        cache()->forever(
+            $this->visitedThreadCacheKey($thread),
+            Carbon::now()
+        );
+    }
+
+    public function visitedThreadCacheKey(Thread $thread)
+    {
+        return sprintf('users.%s.visits.%s', $this->id, $thread->id);
     }
 
     public function threads()

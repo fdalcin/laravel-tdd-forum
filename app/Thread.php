@@ -28,6 +28,13 @@ class Thread extends Model
         return "/threads/{$this->channel->slug}/{$this->id}";
     }
 
+    public function hasUpdatesFor($user)
+    {
+        $key = $user->visitedThreadCacheKey($this);
+
+        return $this->updated_at > cache($key);
+    }
+
     public function addReply($reply)
     {
         $reply = $this->replies()->create($reply);
