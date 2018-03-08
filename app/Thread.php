@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Notifications\ThreadWasUpdated;
 use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
@@ -30,19 +31,31 @@ class Thread extends Model
 
     public function addReply($reply)
     {
-        return $this->replies()->create($reply);
+        $reply = $this->replies()->create($reply);
+
+        $this->subscriptions
+            ->filter(function ($subscription) use ($reply) {
+                return $subscription->user_id != $reply->user_id;
+            })
+            ->each->notify($reply);
+
+        return $reply;
     }
 
     public function subscribe()
     {
         $this->subscriptions()->create([
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
+
+        return $this;
     }
 
     public function unsubscribe()
     {
         $this->subscriptions()->where('user_id', auth()->id())->delete();
+
+        return $this;
     }
 
     public function getIsSubscribedToAttribute()
