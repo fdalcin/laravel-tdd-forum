@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Filters\ThreadFilters;
+use App\Rules\SpamFree;
 use App\Thread;
 use Illuminate\Http\Request;
 
@@ -14,13 +15,6 @@ class ThreadsController extends Controller
         $this->middleware('auth')->except(['index', 'show']);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  Channel $channel
-     * @param  ThreadFilters $filters
-     * @return \Illuminate\Http\Response
-     */
     public function index(Channel $channel, ThreadFilters $filters)
     {
         $threads = $this->getThreads($channel, $filters);
@@ -32,28 +26,16 @@ class ThreadsController extends Controller
         return view('threads.index', compact('threads'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('threads.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function store()
     {
-        $spamFree = resolve('App\Rules\SpamFree');
-
         request()->validate([
-            'title' => ['required', $spamFree],
-            'body' => ['required', $spamFree],
+            'title' => ['required', resolve(SpamFree::class)],
+            'body' => ['required', resolve(SpamFree::class)],
             'channel_id' => 'required|exists:channels,id',
         ]);
 
@@ -68,13 +50,6 @@ class ThreadsController extends Controller
             ->with('flash', 'Your thread has been published.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  $channel
-     * @param  \App\Thread $thread
-     * @return \Illuminate\Http\Response
-     */
     public function show($channel, Thread $thread)
     {
         if (auth()->check()) {
@@ -84,36 +59,6 @@ class ThreadsController extends Controller
         return view('threads.show', compact('thread'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Thread $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Thread $thread)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \App\Thread $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Thread $thread)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  $channel
-     * @param  \App\Thread $thread
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($channel, Thread $thread)
     {
         $this->authorize('update', $thread);
@@ -123,11 +68,6 @@ class ThreadsController extends Controller
         return redirect('/threads');
     }
 
-    /**
-     * @param Channel $channel
-     * @param ThreadFilters $filters
-     * @return mixed
-     */
     protected function getThreads(Channel $channel, ThreadFilters $filters)
     {
         $threads = Thread::latest()->filter($filters);
