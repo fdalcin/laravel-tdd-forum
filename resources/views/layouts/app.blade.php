@@ -42,6 +42,8 @@
                 display: none;
             }
         </style>
+
+        @yield('head')
     </head>
     <body>
         <div id="app">
