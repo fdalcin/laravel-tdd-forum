@@ -12,6 +12,8 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="level">
+                            <img src="{{ $thread->owner->avatar() }}" alt="" width="25" height="25" class="mr-1">
+
                             <span class="flex">
                                 <a href="{{ route('profile', $thread->owner) }}">{{ $thread->owner->name }}</a> posted:
                                 {{ $thread->title }}

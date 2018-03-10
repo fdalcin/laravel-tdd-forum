@@ -3,15 +3,14 @@
 namespace App\Policies;
 
 use App\User;
-use App\Thread;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ThreadPolicy
+class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function update(User $user, Thread $thread)
+    public function update(User $user, User $signedInUser)
     {
-        return $thread->user_id == $user->id;
+        return $signedInUser->id === $user->id;
     }
 }
