@@ -24,8 +24,8 @@ class ThreadsController extends Controller
         }
 
         return view('threads.index', [
-            'threads' => $threads,
-            'trending' => $trending->get()
+            'threads'  => $threads,
+            'trending' => $trending->get(),
         ]);
     }
 
@@ -61,7 +61,7 @@ class ThreadsController extends Controller
 
         $trending->push($thread);
 
-        $thread->recordVisit();
+        $thread->visits()->record();
 
         return view('threads.show', compact('thread'));
     }
