@@ -7,6 +7,7 @@ use App\Filters\ThreadFilters;
 use App\Rules\SpamFree;
 use App\Thread;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class ThreadsController extends Controller
 {
@@ -23,7 +24,9 @@ class ThreadsController extends Controller
             return $threads;
         }
 
-        return view('threads.index', compact('threads'));
+        $trending = array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
+
+        return view('threads.index', compact('threads', 'trending'));
     }
 
     public function create()
@@ -34,16 +37,16 @@ class ThreadsController extends Controller
     public function store()
     {
         request()->validate([
-            'title' => ['required', resolve(SpamFree::class)],
-            'body' => ['required', resolve(SpamFree::class)],
+            'title'      => ['required', resolve(SpamFree::class)],
+            'body'       => ['required', resolve(SpamFree::class)],
             'channel_id' => 'required|exists:channels,id',
         ]);
 
         $thread = Thread::create([
-            'user_id' => auth()->id(),
+            'user_id'    => auth()->id(),
             'channel_id' => request('channel_id'),
-            'title' => request('title'),
-            'body' => request('body'),
+            'title'      => request('title'),
+            'body'       => request('body'),
         ]);
 
         return redirect($thread->path())
@@ -55,6 +58,11 @@ class ThreadsController extends Controller
         if (auth()->check()) {
             auth()->user()->read($thread);
         }
+
+        Redis::zincrby('trending_threads', 1, json_encode([
+            'title' => $thread->title,
+            'path'  => $thread->path(),
+        ]));
 
         return view('threads.show', compact('thread'));
     }
