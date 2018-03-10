@@ -30,6 +30,10 @@
         <div class="card-body">
             <div class="body">{{ $thread->body }}</div>
         </div>
+
+        <div class="card-footer">
+            {{ $thread->visits() }} visits
+        </div>
     </div>
 @empty
     <p>There are no relevant results at this time.</p>
