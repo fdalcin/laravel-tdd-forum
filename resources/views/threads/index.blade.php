@@ -17,11 +17,13 @@
 
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            @foreach($trending as $thread)
+                            @forelse($trending as $thread)
                                 <li class="list-group-item">
                                     <a href="{{ url($thread->path) }}">{{ $thread->title }}</a>
                                 </li>
-                            @endforeach
+                            @empty
+                                <p>No trending threads at this moment.</p>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
