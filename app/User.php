@@ -33,9 +33,20 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $casts = [
+        'confirmed' => 'boolean',
+    ];
+
     public function getRouteKeyName()
     {
         return 'name';
+    }
+
+    public function confirm()
+    {
+        $this->confirmed = true;
+
+        $this->save();
     }
 
     public function read(Thread $thread)
