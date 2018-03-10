@@ -16,7 +16,8 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
-} catch (e) {}
+} catch (e) {
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -30,12 +31,16 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 window.Vue = Vue;
 
-window.Vue.prototype.authorize = handler => handler(window.App.user);
+window.Vue.prototype.authorize = handler => {
+    const user = window.App.user;
+
+    return user ? handler(user) : false;
+}
 
 window.events = new Vue();
 
 window.flash = (message, level = 'success') =>
-    window.events.$emit('flash', { message, level });
+    window.events.$emit('flash', {message, level});
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that

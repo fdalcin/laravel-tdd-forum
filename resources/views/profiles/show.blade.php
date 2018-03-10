@@ -5,19 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="page-header mb-4">
-                    <h1>{{ $user->name }}</h1>
-
-                    @can('update', $user)
-                        <form method="POST" action="{{ route('avatar', $user) }}" enctype="multipart/form-data">
-                            {{ csrf_field() }}
-
-                            <input type="file" name="avatar" class="form-control">
-
-                            <button type="submit" class="btn btn-default">Add avatar</button>
-                        </form>
-                    @endcan
-
-                    <img src="{{ $user->avatar() }}" width="50" height="50">
+                    <avatar-form :user="{{ $user }}"></avatar-form>
                 </div>
 
                 @forelse($activities as $date => $activity)
