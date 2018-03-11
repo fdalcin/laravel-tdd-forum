@@ -27,11 +27,11 @@
         </div>
 
         <div class="card-footer level">
-            <div v-if="canUpdate">
+            <div v-if="authorize('updateReply', reply)">
                 <button class="btn btn-sm mr-2" @click="editing = true">Edit</button>
                 <button class="btn btn-link" @click="destroy">Delete</button>
             </div>
-            
+
             <button class="btn btn-sm btn-default ml-a" @click="markAsBest" v-show="!isBest">Best reply?</button>
         </div>
     </div>
@@ -52,21 +52,14 @@
             return {
                 body: this.data.body,
                 editing: false,
-                isBest: false
+                isBest: false,
+                reply: this.data
             };
         },
 
         computed: {
             ago() {
                 return moment(this.data.created_at).fromNow();
-            },
-
-            canUpdate() {
-                return this.authorize(user => this.data.user_id == user.id);
-            },
-
-            signedIn() {
-                return window.App.signedIn;
             }
         },
 

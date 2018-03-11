@@ -1,4 +1,4 @@
-<template>
+fsigned<template>
     <div class="mt-4">
         <div v-if="signedIn">
             <div class="form-group">
@@ -31,12 +31,6 @@ export default {
         return {
             body: ''
         };
-    },
-
-    computed: {
-        signedIn() {
-            return window.App.signedIn;
-        }
     },
 
     mounted() {
