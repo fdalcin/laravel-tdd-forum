@@ -26,13 +26,17 @@
             <div v-else v-html="body"></div>
         </div>
 
-        <div class="card-footer level">
-            <div v-if="authorize('updateReply', reply)">
+        <div class="card-footer level" v-if="authorize('owns', reply) || authorize('owns', reply.thread)">
+            <div v-if="authorize('owns', reply)">
                 <button class="btn btn-sm mr-2" @click="editing = true">Edit</button>
                 <button class="btn btn-link" @click="destroy">Delete</button>
             </div>
 
-            <button class="btn btn-sm btn-default ml-a" @click="markAsBest" v-show="!isBest">Best reply?</button>
+            <button class="btn btn-sm btn-default ml-a"
+                    @click="markAsBest"
+                    v-show="authorize('owns', reply.thread) && !isBest">
+                Best reply?
+            </button>
         </div>
     </div>
 </template>

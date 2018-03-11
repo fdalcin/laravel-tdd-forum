@@ -63217,6 +63217,12 @@ var user = window.App.user;
 module.exports = {
     updateReply: function updateReply(reply) {
         return reply.user_id === user.id;
+    },
+
+
+    owns: function owns(model) {
+        var prop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'user_id';
+        return model[prop] === user.id;
     }
 };
 
@@ -66503,6 +66509,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -67052,47 +67062,51 @@ var render = function() {
           : _c("div", { domProps: { innerHTML: _vm._s(_vm.body) } })
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "card-footer level" }, [
-        _vm.authorize("updateReply", _vm.reply)
-          ? _c("div", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-sm mr-2",
-                  on: {
-                    click: function($event) {
-                      _vm.editing = true
-                    }
-                  }
-                },
-                [_vm._v("Edit")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                { staticClass: "btn btn-link", on: { click: _vm.destroy } },
-                [_vm._v("Delete")]
-              )
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            directives: [
+      _vm.authorize("owns", _vm.reply) ||
+      _vm.authorize("owns", _vm.reply.thread)
+        ? _c("div", { staticClass: "card-footer level" }, [
+            _vm.authorize("owns", _vm.reply)
+              ? _c("div", [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-sm mr-2",
+                      on: {
+                        click: function($event) {
+                          _vm.editing = true
+                        }
+                      }
+                    },
+                    [_vm._v("Edit")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    { staticClass: "btn btn-link", on: { click: _vm.destroy } },
+                    [_vm._v("Delete")]
+                  )
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "button",
               {
-                name: "show",
-                rawName: "v-show",
-                value: !_vm.isBest,
-                expression: "!isBest"
-              }
-            ],
-            staticClass: "btn btn-sm btn-default ml-a",
-            on: { click: _vm.markAsBest }
-          },
-          [_vm._v("Best reply?")]
-        )
-      ])
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value:
+                      _vm.authorize("owns", _vm.reply.thread) && !_vm.isBest,
+                    expression: "authorize('owns', reply.thread) && !isBest"
+                  }
+                ],
+                staticClass: "btn btn-sm btn-default ml-a",
+                on: { click: _vm.markAsBest }
+              },
+              [_vm._v("\n            Best reply?\n        ")]
+            )
+          ])
+        : _vm._e()
     ]
   )
 }
