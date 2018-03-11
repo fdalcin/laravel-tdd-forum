@@ -27,10 +27,10 @@ class ThreadTest extends TestCase
     }
 
     /** @test */
-    function it_can_make_a_string_path()
+    function it_has_a_path()
     {
         $this->assertEquals(
-            "/threads/{$this->thread->channel->slug}/{$this->thread->id}",
+            "/threads/{$this->thread->channel->slug}/{$this->thread->slug}",
             $this->thread->path()
         );
     }
