@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Activity;
-use App\Thread;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -79,19 +78,27 @@ class CreateThreadsTest extends TestCase
     {
         $this->signIn();
 
-        $this->withoutExceptionHandling();
-
-        $thread = create('App\Thread', ['title' => 'Foo Bar Title', 'slug' => 'foo-bar-title']);
+        $thread = create('App\Thread', ['title' => 'Foo Bar Title']);
 
         $this->assertEquals($thread->fresh()->slug, 'foo-bar-title');
 
-        $this->post(route('threads.store'), $thread->toArray());
+        $thread = $this->postJson(route('threads.store'), $thread->toArray())->json();
 
-        $this->assertTrue(Thread::whereSlug('foo-bar-title-2')->exists());
+        $this->assertEquals("foo-bar-title-{$thread['id']}", $thread['slug']);
+    }
 
-        $this->post(route('threads.store'), $thread->toArray());
+    /** @test */
+    function a_thread_with_a_title_that_ends_with_a_number_should_generate_the_proper_slug()
+    {
+        $this->signIn();
 
-        $this->assertTrue(Thread::whereSlug('foo-bar-title-3')->exists());
+        $thread = create('App\Thread', ['title' => 'Foo Bar 24']);
+
+        $this->assertEquals($thread->fresh()->slug, 'foo-bar-24');
+
+        $thread = $this->postJson(route('threads.store'), $thread->toArray())->json();
+
+        $this->assertEquals("foo-bar-24-{$thread['id']}", $thread['slug']);
     }
 
     /** @test */
