@@ -38,6 +38,10 @@
                 flex: 1;
             }
 
+            .ml-a {
+                margin-left: auto;
+            }
+
             [v-cloak] {
                 display: none;
             }

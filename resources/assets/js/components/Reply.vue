@@ -1,5 +1,5 @@
 <template>
-    <div :id="'reply-' + data.id" class="card mt-4 mb-2">
+    <div :id="'reply-' + data.id" class="card mt-4 mb-2" :class="isBest? 'border-success' : ''">
         <div class="card-header level">
             <h5 class="flex">
                 <a :href="'/profiles/' + data.owner.name" v-text="data.owner.name"></a>
@@ -26,68 +26,77 @@
             <div v-else v-html="body"></div>
         </div>
 
-        <div class="card-footer level" v-if="canUpdate">
-            <button class="btn btn-sm mr-2" @click="editing = true">Edit</button>
-            <button class="btn btn-link" @click="destroy">Delete</button>
+        <div class="card-footer level">
+            <div v-if="canUpdate">
+                <button class="btn btn-sm mr-2" @click="editing = true">Edit</button>
+                <button class="btn btn-link" @click="destroy">Delete</button>
+            </div>
+            
+            <button class="btn btn-sm btn-default ml-a" @click="markAsBest" v-show="!isBest">Best reply?</button>
         </div>
     </div>
 </template>
 
 <script>
-import Favorite from './Favorite.vue';
-import moment from 'moment';
+    import Favorite from './Favorite.vue';
+    import moment from 'moment';
 
-export default {
-    props: ['data'],
+    export default {
+        props: ['data'],
 
-    components: {
-        Favorite
-    },
-
-    data() {
-        return {
-            body: this.data.body,
-            editing: false
-        };
-    },
-
-    computed: {
-        ago() {
-            return moment(this.data.created_at).fromNow();
+        components: {
+            Favorite
         },
 
-        canUpdate() {
-            return this.authorize(user => this.data.user_id == user.id);
+        data() {
+            return {
+                body: this.data.body,
+                editing: false,
+                isBest: false
+            };
         },
 
-        signedIn() {
-            return window.App.signedIn;
+        computed: {
+            ago() {
+                return moment(this.data.created_at).fromNow();
+            },
+
+            canUpdate() {
+                return this.authorize(user => this.data.user_id == user.id);
+            },
+
+            signedIn() {
+                return window.App.signedIn;
+            }
+        },
+
+        methods: {
+            cancel() {
+                this.body = this.data.body;
+
+                this.editing = false;
+            },
+
+            destroy() {
+                axios
+                        .delete('/replies/' + this.data.id)
+                        .then(() => this.$emit('deleted', this.data.id));
+            },
+
+            update() {
+                axios
+                        .patch('/replies/' + this.data.id, {body: this.body})
+                        .then(() => {
+                            this.editing = false;
+
+                            flash('Your reply has been updated.');
+                        })
+                        .catch(({response}) => flash(response.data, 'danger'));
+            },
+
+            markAsBest() {
+                this.isBest = true;
+            }
         }
-    },
-
-    methods: {
-        cancel() {
-            this.body = this.data.body;
-
-            this.editing = false;
-        },
-
-        destroy() {
-            axios
-                .delete('/replies/' + this.data.id)
-                .then(() => this.$emit('deleted', this.data.id));
-        },
-
-        update() {
-            axios
-                .patch('/replies/' + this.data.id, { body: this.body })
-                .then(() => {
-                    this.editing = false;
-
-                    flash('Your reply has been updated.');
-                })
-                .catch(({ response }) => flash(response.data, 'danger'));
-        }
-    }
-};
+    };
 </script>

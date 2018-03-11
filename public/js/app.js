@@ -66483,6 +66483,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -66497,7 +66501,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             body: this.data.body,
-            editing: false
+            editing: false,
+            isBest: false
         };
     },
 
@@ -66542,6 +66547,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var response = _ref.response;
                 return flash(response.data, 'danger');
             });
+        },
+        markAsBest: function markAsBest() {
+            this.isBest = true;
         }
     }
 });
@@ -66952,7 +66960,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "card mt-4 mb-2", attrs: { id: "reply-" + _vm.data.id } },
+    {
+      staticClass: "card mt-4 mb-2",
+      class: _vm.isBest ? "border-success" : "",
+      attrs: { id: "reply-" + _vm.data.id }
+    },
     [
       _c("div", { staticClass: "card-header level" }, [
         _c("h5", { staticClass: "flex" }, [
@@ -67020,28 +67032,47 @@ var render = function() {
           : _c("div", { domProps: { innerHTML: _vm._s(_vm.body) } })
       ]),
       _vm._v(" "),
-      _vm.canUpdate
-        ? _c("div", { staticClass: "card-footer level" }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-sm mr-2",
-                on: {
-                  click: function($event) {
-                    _vm.editing = true
+      _c("div", { staticClass: "card-footer level" }, [
+        _vm.canUpdate
+          ? _c("div", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-sm mr-2",
+                  on: {
+                    click: function($event) {
+                      _vm.editing = true
+                    }
                   }
-                }
-              },
-              [_vm._v("Edit")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              { staticClass: "btn btn-link", on: { click: _vm.destroy } },
-              [_vm._v("Delete")]
-            )
-          ])
-        : _vm._e()
+                },
+                [_vm._v("Edit")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                { staticClass: "btn btn-link", on: { click: _vm.destroy } },
+                [_vm._v("Delete")]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: !_vm.isBest,
+                expression: "!isBest"
+              }
+            ],
+            staticClass: "btn btn-sm btn-default ml-a",
+            on: { click: _vm.markAsBest }
+          },
+          [_vm._v("Best reply?")]
+        )
+      ])
     ]
   )
 }
