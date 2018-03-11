@@ -1,13 +1,13 @@
 <template>
-    <div :id="'reply-' + data.id" class="card mt-4 mb-2" :class="isBest? 'border-success' : ''">
+    <div :id="'reply-' + reply.id" class="card mt-4 mb-2" :class="isBest? 'border-success' : ''">
         <div class="card-header level">
             <h5 class="flex">
-                <a :href="'/profiles/' + data.owner.name" v-text="data.owner.name"></a>
+                <a :href="'/profiles/' + reply.owner.name" v-text="reply.owner.name"></a>
                 said <span v-text="ago"></span>
             </h5>
 
             <div v-if="signedIn">
-                <favorite :reply="data"></favorite>
+                <favorite :reply="reply"></favorite>
             </div>
         </div>
 
@@ -42,7 +42,7 @@
     import moment from 'moment';
 
     export default {
-        props: ['data'],
+        props: ['reply'],
 
         components: {
             Favorite
@@ -50,35 +50,38 @@
 
         data() {
             return {
-                body: this.data.body,
+                body: this.reply.body,
                 editing: false,
-                isBest: false,
-                reply: this.data
+                isBest: this.reply.isBest,
             };
+        },
+
+        created() {
+            window.events.$on('best-reply-selected', id => this.isBest = this.reply.id === id);
         },
 
         computed: {
             ago() {
-                return moment(this.data.created_at).fromNow();
+                return moment(this.reply.created_at).fromNow();
             }
         },
 
         methods: {
             cancel() {
-                this.body = this.data.body;
+                this.body = this.reply.body;
 
                 this.editing = false;
             },
 
             destroy() {
                 axios
-                        .delete('/replies/' + this.data.id)
-                        .then(() => this.$emit('deleted', this.data.id));
+                        .delete('/replies/' + this.reply.id)
+                        .then(() => this.$emit('deleted', this.reply.id));
             },
 
             update() {
                 axios
-                        .patch('/replies/' + this.data.id, {body: this.body})
+                        .patch('/replies/' + this.reply.id, {body: this.body})
                         .then(() => {
                             this.editing = false;
 
@@ -88,7 +91,9 @@
             },
 
             markAsBest() {
-                this.isBest = true;
+                axios.post('/replies/' + this.reply.id + '/best')
+                        .then(() => window.events.$emit('best-reply-selected', this.reply.id))
+                        .catch(({response}) => flash(response.data, 'danger'));
             }
         }
     };

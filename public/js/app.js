@@ -66508,7 +66508,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['data'],
+    props: ['reply'],
 
     components: {
         Favorite: __WEBPACK_IMPORTED_MODULE_0__Favorite_vue___default.a
@@ -66516,38 +66516,44 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            body: this.data.body,
+            body: this.reply.body,
             editing: false,
-            isBest: false,
-            reply: this.data
+            isBest: this.reply.isBest
         };
+    },
+    created: function created() {
+        var _this = this;
+
+        window.events.$on('best-reply-selected', function (id) {
+            return _this.isBest = _this.reply.id === id;
+        });
     },
 
 
     computed: {
         ago: function ago() {
-            return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.data.created_at).fromNow();
+            return __WEBPACK_IMPORTED_MODULE_1_moment___default()(this.reply.created_at).fromNow();
         }
     },
 
     methods: {
         cancel: function cancel() {
-            this.body = this.data.body;
+            this.body = this.reply.body;
 
             this.editing = false;
         },
         destroy: function destroy() {
-            var _this = this;
+            var _this2 = this;
 
-            axios.delete('/replies/' + this.data.id).then(function () {
-                return _this.$emit('deleted', _this.data.id);
+            axios.delete('/replies/' + this.reply.id).then(function () {
+                return _this2.$emit('deleted', _this2.reply.id);
             });
         },
         update: function update() {
-            var _this2 = this;
+            var _this3 = this;
 
-            axios.patch('/replies/' + this.data.id, { body: this.body }).then(function () {
-                _this2.editing = false;
+            axios.patch('/replies/' + this.reply.id, { body: this.body }).then(function () {
+                _this3.editing = false;
 
                 flash('Your reply has been updated.');
             }).catch(function (_ref) {
@@ -66556,7 +66562,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         markAsBest: function markAsBest() {
-            this.isBest = true;
+            var _this4 = this;
+
+            axios.post('/replies/' + this.reply.id + '/best').then(function () {
+                return window.events.$emit('best-reply-selected', _this4.reply.id);
+            }).catch(function (_ref2) {
+                var response = _ref2.response;
+                return flash(response.data, 'danger');
+            });
         }
     }
 });
@@ -66970,21 +66983,21 @@ var render = function() {
     {
       staticClass: "card mt-4 mb-2",
       class: _vm.isBest ? "border-success" : "",
-      attrs: { id: "reply-" + _vm.data.id }
+      attrs: { id: "reply-" + _vm.reply.id }
     },
     [
       _c("div", { staticClass: "card-header level" }, [
         _c("h5", { staticClass: "flex" }, [
           _c("a", {
-            attrs: { href: "/profiles/" + _vm.data.owner.name },
-            domProps: { textContent: _vm._s(_vm.data.owner.name) }
+            attrs: { href: "/profiles/" + _vm.reply.owner.name },
+            domProps: { textContent: _vm._s(_vm.reply.owner.name) }
           }),
           _vm._v("\n            said "),
           _c("span", { domProps: { textContent: _vm._s(_vm.ago) } })
         ]),
         _vm._v(" "),
         _vm.signedIn
-          ? _c("div", [_c("favorite", { attrs: { reply: _vm.data } })], 1)
+          ? _c("div", [_c("favorite", { attrs: { reply: _vm.reply } })], 1)
           : _vm._e()
       ]),
       _vm._v(" "),
@@ -67137,7 +67150,7 @@ var render = function() {
           { key: reply.id },
           [
             _c("reply", {
-              attrs: { data: reply },
+              attrs: { reply: reply },
               on: {
                 deleted: function($event) {
                   _vm.remove(index)
