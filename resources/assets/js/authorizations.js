@@ -1,9 +1,7 @@
 const user = window.App.user;
 
 module.exports = {
-    updateReply(reply) {
-        return reply.user_id === user.id;
-    },
-
     owns: (model, prop = 'user_id') => model[prop] === user.id,
+
+    isAdmin: () => ['JohnDoe', 'JaneDoe'].includes(user.name)
 };
