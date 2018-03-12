@@ -7,6 +7,7 @@ use App\Filters\ThreadFilters;
 use App\Rules\SpamFree;
 use App\Thread;
 use App\Trending;
+use Zttp\Zttp;
 
 class ThreadsController extends Controller
 {
@@ -24,7 +25,7 @@ class ThreadsController extends Controller
         }
 
         return view('threads.index', [
-            'threads'  => $threads,
+            'threads' => $threads,
             'trending' => $trending->get(),
         ]);
     }
@@ -37,16 +38,26 @@ class ThreadsController extends Controller
     public function store()
     {
         request()->validate([
-            'title'      => ['required', resolve(SpamFree::class)],
-            'body'       => ['required', resolve(SpamFree::class)],
+            'title' => ['required', resolve(SpamFree::class)],
+            'body' => ['required', resolve(SpamFree::class)],
             'channel_id' => 'required|exists:channels,id',
         ]);
 
+        $response = Zttp::asFormParams()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => config('services.recaptcha.secret'),
+            'response' => request()->input('g-recaptcha-response'),
+            'remoteip' => request()->ip()
+        ]);
+
+        if (!$response->json()['success']) {
+            throw new \Exception('Recaptcha failed');
+        }
+
         $thread = Thread::create([
-            'user_id'    => auth()->id(),
+            'user_id' => auth()->id(),
             'channel_id' => request('channel_id'),
-            'title'      => request('title'),
-            'body'       => request('body'),
+            'title' => request('title'),
+            'body' => request('body'),
         ]);
 
         if (request()->expectsJson()) {
