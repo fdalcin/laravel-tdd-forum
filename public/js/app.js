@@ -64440,11 +64440,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            repliesCount: this.thread.replies_count,
+            body: this.thread.body,
+            title: this.thread.title,
             locked: this.thread.locked,
+            repliesCount: this.thread.replies_count,
             editing: false,
-            body: this.thread.body
+            form: {}
         };
+    },
+    created: function created() {
+        this.resetForm();
     },
 
 
@@ -64452,16 +64457,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         toggleLock: function toggleLock() {
             var _this = this;
 
-            axios[this.locked ? 'delete' : 'post']('/locked-threads/' + this.thread.slug).then(function () {
+            var uri = '/locked-threads/' + this.thread.slug;
+
+            axios[this.locked ? 'delete' : 'post'](uri).then(function () {
                 return _this.locked = !_this.locked;
             });
         },
-        cancel: function cancel() {
-            this.body = this.thread.body;
+        update: function update() {
+            var _this2 = this;
+
+            var uri = '/threads/' + this.thread.channel.slug + '/' + this.thread.slug;
+
+            axios.patch(uri, this.form).then(function () {
+                _this2.editing = false;
+
+                _this2.title = _this2.form.title;
+                _this2.body = _this2.form.body;
+
+                flash('Your thread has been updated.');
+            }).catch(function (_ref) {
+                var response = _ref.response;
+                return flash(response.data.message, 'danger');
+            });
+        },
+        resetForm: function resetForm() {
+            this.form = {
+                body: this.thread.body,
+                title: this.thread.title
+            };
 
             this.editing = false;
-        },
-        update: function update() {}
+        }
     }
 });
 
