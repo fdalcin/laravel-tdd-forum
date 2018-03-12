@@ -20,6 +20,10 @@ class RepliesController extends Controller
 
     public function store($channelId, Thread $thread, CreateReplyRequest $form)
     {
+        if ($thread->locked) {
+            return response('This thread is locked', 422);
+        }
+
         return $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id(),

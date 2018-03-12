@@ -45,7 +45,7 @@ class ThreadTest extends TestCase
     function it_can_add_a_reply()
     {
         $this->thread->addReply([
-            'body'    => 'Foobar',
+            'body' => 'Foobar',
             'user_id' => 1,
         ]);
 
@@ -61,7 +61,7 @@ class ThreadTest extends TestCase
             ->thread
             ->subscribe()
             ->addReply([
-                'body'    => 'Foobar',
+                'body' => 'Foobar',
                 'user_id' => create('App\User')->id,
             ]);
 
@@ -97,8 +97,10 @@ class ThreadTest extends TestCase
 
         $this->assertCount(0, $this->thread->subscriptions);
 
-        $this->assertDatabaseMissing('thread_subscriptions',
-            ['user_id' => auth()->id(), 'thread_id' => $this->thread->id]);
+        $this->assertDatabaseMissing(
+            'thread_subscriptions',
+            ['user_id' => auth()->id(), 'thread_id' => $this->thread->id]
+        );
     }
 
     /** @test */
@@ -125,5 +127,15 @@ class ThreadTest extends TestCase
 
             $this->assertFalse($this->thread->hasUpdatesFor($user));
         });
+    }
+
+    /** @test */
+    function it_may_be_locked()
+    {
+        $this->assertFalse($this->thread->locked);
+
+        $this->thread->lock();
+
+        $this->assertTrue($this->thread->locked);
     }
 }
