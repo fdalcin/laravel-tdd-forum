@@ -10,7 +10,9 @@ export default {
     data() {
         return {
             repliesCount: this.thread.replies_count,
-            locked: this.thread.locked
+            locked: this.thread.locked,
+            editing: false,
+            body: this.thread.body
         };
     },
 
@@ -19,7 +21,15 @@ export default {
             axios[this.locked ? 'delete' : 'post'](
                 '/locked-threads/' + this.thread.slug
             ).then(() => (this.locked = !this.locked));
-        }
+        },
+
+        cancel() {
+            this.body = this.thread.body;
+
+            this.editing = false;
+        },
+
+        update() {}
     }
 };
 </script>
