@@ -58,6 +58,11 @@ class User extends Authenticatable
         );
     }
 
+    public function isAdmin()
+    {
+        return in_array($this->name, ['JohnDoe', 'JaneDoe']);
+    }
+
     public function visitedThreadCacheKey(Thread $thread)
     {
         return sprintf('users.%s.visits.%s', $this->id, $thread->id);
@@ -80,6 +85,6 @@ class User extends Authenticatable
 
     public function getAvatarPathAttribute($avatar)
     {
-        return asset($avatar ?: 'images/avatars/default.png');
+        return asset($avatar ? : 'images/avatars/default.png');
     }
 }
