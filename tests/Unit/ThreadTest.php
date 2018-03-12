@@ -128,14 +128,4 @@ class ThreadTest extends TestCase
             $this->assertFalse($this->thread->hasUpdatesFor($user));
         });
     }
-
-    /** @test */
-    function it_may_be_locked()
-    {
-        $this->assertFalse($this->thread->locked);
-
-        $this->thread->lock();
-
-        $this->assertTrue($this->thread->locked);
-    }
 }

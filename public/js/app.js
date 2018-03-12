@@ -64434,15 +64434,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['dataRepliesCount', 'dataLocked'],
+    props: ['thread'],
 
     components: { SubscribeButton: __WEBPACK_IMPORTED_MODULE_1__components_SubscribeButton_vue___default.a, Replies: __WEBPACK_IMPORTED_MODULE_0__components_Replies_vue___default.a },
 
     data: function data() {
         return {
-            repliesCount: this.dataRepliesCount,
-            locked: this.dataLocked
+            repliesCount: this.thread.replies_count,
+            locked: this.thread.locked
         };
+    },
+
+
+    methods: {
+        toggleLock: function toggleLock() {
+            var _this = this;
+
+            axios[this.locked ? 'delete' : 'post']('/locked-threads/' + this.thread.slug).then(function () {
+                return _this.locked = !_this.locked;
+            });
+        }
     }
 });
 
@@ -64504,6 +64515,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Reply_vue__ = __webpack_require__(193);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Reply_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Reply_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mixins_collection__ = __webpack_require__(200);
+//
+//
 //
 //
 //
@@ -66357,7 +66370,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "mt-4" }, [
+  return _c("div", [
     _vm.signedIn
       ? _c("div", [
           _c("div", { staticClass: "form-group" }, [
@@ -67185,13 +67198,20 @@ var render = function() {
         on: { changed: _vm.fetch }
       }),
       _vm._v(" "),
-      _vm.$parent.locked
-        ? _c("p", { staticClass: "mt-4 text-center" }, [
-            _vm._v(
-              "\n        This thread has been locked. No more replies are allowed.\n    "
-            )
-          ])
-        : _c("new-reply", { on: { created: _vm.add } })
+      _c(
+        "div",
+        { staticClass: "mt-4" },
+        [
+          _vm.$parent.locked
+            ? _c("p", { staticClass: "text-center" }, [
+                _vm._v(
+                  "\n            This thread has been locked. No more replies are allowed.\n        "
+                )
+              ])
+            : _c("new-reply", { on: { created: _vm.add } })
+        ],
+        1
+      )
     ],
     2
   )

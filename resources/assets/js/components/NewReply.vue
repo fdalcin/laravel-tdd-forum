@@ -1,5 +1,5 @@
 fsigned<template>
-    <div class="mt-4">
+    <div>
         <div v-if="signedIn">
             <div class="form-group">
                 <textarea name="body" 
