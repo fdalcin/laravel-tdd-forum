@@ -24,7 +24,7 @@ class CreateReplyRequest extends FormRequest
     public function rules()
     {
         return [
-            'body' => ['required', resolve(SpamFree::class)]
+            'body' => ['required', new SpamFree]
         ];
     }
 }

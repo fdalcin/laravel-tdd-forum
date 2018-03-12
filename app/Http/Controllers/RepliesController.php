@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateReplyRequest;
 use App\Reply;
 use App\Thread;
+use App\Rules\SpamFree;
 
 class RepliesController extends Controller
 {
@@ -35,7 +36,7 @@ class RepliesController extends Controller
         $this->authorize('update', $reply);
 
         request()->validate([
-            'body' => ['required', resolve('App\Rules\SpamFree')]
+            'body' => ['required', new SpamFree]
         ]);
 
         $reply->update(['body' => request('body')]);
