@@ -68,6 +68,11 @@ class Reply extends Model
         );
     }
 
+    public function getBodyAttribute($body)
+    {
+        return \Purify::clean($body);
+    }
+
     public function isBest()
     {
         return $this->thread->best_reply_id == $this->id;

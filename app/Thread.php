@@ -115,6 +115,11 @@ class Thread extends Model
         $this->attributes['slug'] = $slug;
     }
 
+    public function getBodyAttribute($body)
+    {
+        return \Purify::clean($body);
+    }
+
     public function markAsBestReply(Reply $reply)
     {
         $this->update(['best_reply_id' => $reply->id]);
